@@ -1,3 +1,13 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
-COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+# syntax=docker/dockerfile:1
+
+FROM openjdk:11
+
+WORKDIR /app
+
+COPY .mvn/ .mvn 
+COPY mvnw pom.xml ./
+COPY pom.xml ./pom.xml
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+CMD ["./mvnw", "spring-boot:run"]
